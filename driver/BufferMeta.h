@@ -8,8 +8,9 @@
 
 class BufferMeta {
 public:
+    explicit BufferMeta(void* start, unsigned length): start{start}, length{length} {}
     void* start;
-    int length;
+    unsigned length;
 };
 
 

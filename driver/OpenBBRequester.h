@@ -7,7 +7,10 @@
 #include <vector>
 #include <iostream>
 #include <linux/videodev2.h>
+#include <sys/ioctl.h>
 #include <cstring>
+#include <sys/mman.h>
+#include <fcntl.h>
 #include "BufferMeta.h"
 
 class OpenBBRequester {
