@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 project(OpenBB)
 
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(OpenBB driver/main.cpp driver/OpenBBDriver.cpp driver/OpenBBDriver.h driver/OpenBBMarshaller.cpp driver/OpenBBMarshaller.h driver/OpenBBRequester.cpp driver/OpenBBRequester.h driver/BufferMeta.cpp driver/BufferMeta.h)
+
+find_package(Qt5 COMPONENTS WebSockets Core REQUIRED)
+add_executable(OpenBB driver/hardware/OpenBBDriver.cpp driver/hardware/OpenBBDriver.h driver/hardware/OpenBBMarshaller.cpp driver/hardware/OpenBBMarshaller.h driver/hardware/OpenBBRequester.cpp driver/hardware/OpenBBRequester.h driver/hardware/BufferMeta.cpp driver/hardware/BufferMeta.h driver/web/OpenBBDriverServer.cpp driver/web/OpenBBDriverServer.h driver/web/OpenBBWebSocket.cpp driver/web/OpenBBWebSocket.h)
+
+target_link_libraries(OpenBB Qt5::WebSockets Qt5::Core)
