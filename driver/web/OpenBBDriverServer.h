@@ -14,6 +14,9 @@ class OpenBBDriverServer: public QObject {
   Q_OBJECT
 public:
     OpenBBDriverServer(int port, QString address);
+    void start();
+public slots:
+    void handleNewConnection();
 private:
     QWebSocketServer* server;
     QHostAddress address;
