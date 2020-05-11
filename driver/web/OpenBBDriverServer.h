@@ -10,18 +10,15 @@
 #include <vector>
 #include "OpenBBWebSocket.h"
 
-class OpenBBDriverServer: public QObject {
+class OpenBBDriverServer: public QWebSocketServer {
   Q_OBJECT
 public:
     OpenBBDriverServer(int port, QString address);
-    void start();
 public slots:
-    void handleNewConnection();
+    void handleConnection();
+    void cleanUp();
 private:
-    QWebSocketServer* server;
-    QHostAddress address;
-    int port;
-    std::vector<QWebSocket> sockets;
+    OpenBBWebSocket activeSocket = nullptr;
 };
 
 

@@ -4,16 +4,21 @@
 
 #include "OpenBBDriverServer.h"
 
-OpenBBDriverServer::OpenBBDriverServer(int port, QString address): address{address}, port{port} {
-    QHostAddress addr(address);
-    this->server = new QWebSocketServer("OpenBBDriverServer", QWebSocketServer::SslMode::NonSecureMode);
-    this->connect(this->server, &QWebSocketServer::newConnection, this, &OpenBBDriverServer::handleNewConnection);
+OpenBBDriverServer::OpenBBDriverServer(int port, QString address): QWebSocketServer("OpenBBDriverServer", QWebSocketServer::SslMode::NonSecureMode) {
+    this->listen(QHostAddress(address), port);
+    this->setMaxPendingConnections(1);
+    OpenBBDriverServer::connect(this, &QWebSocketServer::newConnection, this, &OpenBBDriverServer::handleConnection);
 }
 
-void OpenBBDriverServer::start() {
-    this->server->listen(this->address, this->port);
+void OpenBBDriverServer::handleConnection() {
+    this->pauseAccepting();
+    this->activeSocket = OpenBBWebSocket(this->nextPendingConnection());
+    OpenBBDriverServer::connect(&this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
 }
 
-void OpenBBDriverServer::handleNewConnection() {
-    
+void OpenBBDriverServer::cleanUp() {
+    OpenBBDriverServer::disconnect(&this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
+    delete &this->activeSocket;
+    this->activeSocket = nullptr;
+    this->resumeAccepting();
 }

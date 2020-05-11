@@ -3,3 +3,7 @@
 //
 
 #include "OpenBBWebSocket.h"
+
+OpenBBWebSocket::OpenBBWebSocket(QWebSocket* webSocket) {
+    this->webSocket = webSocket;
+}

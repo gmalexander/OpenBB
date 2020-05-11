@@ -7,8 +7,16 @@
 #include <QObject>
 #include <QWebSocket>
 
-class OpenBBWebSocket {
-
+class OpenBBWebSocket: public QObject {
+    Q_OBJECT
+public:
+    OpenBBWebSocket(QWebSocket* webSocket);
+public slots:
+    void cleanUp();
+signals:
+    void closing();
+private:
+    QWebSocket* webSocket;
 };
 
 
