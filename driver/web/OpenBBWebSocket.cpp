@@ -6,4 +6,10 @@
 
 OpenBBWebSocket::OpenBBWebSocket(QWebSocket* webSocket) {
     this->webSocket = webSocket;
+    OpenBBWebSocket::connect(this->webSocket, &QWebSocket::aboutToClose, this, &OpenBBWebSocket::cleanUp);
 }
+
+void OpenBBWebSocket::cleanUp() {
+    emit this->closing();
+}
+

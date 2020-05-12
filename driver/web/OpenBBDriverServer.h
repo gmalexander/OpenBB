@@ -18,7 +18,7 @@ public slots:
     void handleConnection();
     void cleanUp();
 private:
-    OpenBBWebSocket activeSocket = nullptr;
+    OpenBBWebSocket activeSocket;
 };
 
 
