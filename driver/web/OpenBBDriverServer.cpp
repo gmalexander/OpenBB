@@ -12,13 +12,13 @@ OpenBBDriverServer::OpenBBDriverServer(int port, QString address): QWebSocketSer
 
 void OpenBBDriverServer::handleConnection() {
     this->pauseAccepting();
-    this->activeSocket = OpenBBWebSocket(this->nextPendingConnection());
-    OpenBBDriverServer::connect(&this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
+    this->activeSocket = new OpenBBWebSocket(this->nextPendingConnection());
+    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
 }
 
 void OpenBBDriverServer::cleanUp() {
-    OpenBBDriverServer::disconnect(&this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
-    delete &this->activeSocket;
+    OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
+    delete this->activeSocket;
     this->activeSocket = nullptr;
     this->resumeAccepting();
 }

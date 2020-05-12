@@ -4,11 +4,21 @@
 
 #ifndef OPENBB_OPENBBDRIVER_H
 #define OPENBB_OPENBBDRIVER_H
+#include <QObject>
 #include <vector>
+#include "OpenBBMarshaller.h"
+#include "OpenBBRequester.h"
 
-class OpenBBDriver {
+class OpenBBDriver: public QObject {
+    Q_OBJECT
 public:
-    std::vector<char> stream();
+    OpenBBDriver();
+    void stream();
+signals:
+    void binaryDataReady(std::vector<char> data);
+private:
+    OpenBBMarshaller* marshaller;
+    OpenBBRequester* requester;
 };
 
 
