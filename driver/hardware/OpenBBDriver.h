@@ -17,7 +17,6 @@ public:
 signals:
     void binaryDataReady(std::vector<char> data);
 private:
-    OpenBBMarshaller* marshaller;
     OpenBBRequester* requester;
 };
 

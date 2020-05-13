@@ -7,18 +7,25 @@
 #include <vector>
 #include <iostream>
 #include <linux/videodev2.h>
+#include <QObject>
 #include <sys/ioctl.h>
 #include <cstring>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include "BufferMeta.h"
+#include "OpenBBMarshaller.h"
 
-class OpenBBRequester {
+class OpenBBRequester: public QObject {
+    Q_OBJECT
 public:
     explicit OpenBBRequester(int fd): fd{fd} {}
     void configureBuffers();
     void requestBuffers();
-    BufferMeta queryBuffers();
+    void queryBuffers();
+signals:
+    void buffersConfigured();
+    void buffersRequested();
+    void buffersQueried(BufferMeta* meta);
 private:
     int fd;
 };

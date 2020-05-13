@@ -26,7 +26,7 @@ void OpenBBRequester::requestBuffers() {
     }
 }
 
-BufferMeta OpenBBRequester::queryBuffers() {
+OpenBBMarshaller* OpenBBRequester::queryBuffers() {
     v4l2_buffer buf;
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     buf.index = 0;
@@ -34,5 +34,6 @@ BufferMeta OpenBBRequester::queryBuffers() {
     if (result != 0) {
         std::cout << "Querying buffers failed for reason: " << strerror(errno) << "\n";
     }
-    return BufferMeta{mmap(NULL, buf.length, PROT_READ | PROT_WRITE, this->fd, MAP_SHARED, buf.m.offset), buf.length};
+    BufferMeta meta{mmap(NULL, buf.length, PROT_READ | PROT_WRITE, this->fd, MAP_SHARED, buf.m.offset), buf.length};
+    return new OpenBBMarshaller(meta, this->fd);
 }

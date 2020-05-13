@@ -26,7 +26,7 @@ void OpenBBMarshaller::unstream() {
     int result = ioctl(this->fd, VIDIOC_STREAMOFF);
     if (result != 0) {
         std::cout << "Turning streaming off failed for reason: " << strerror(errno) << "\n";
-}
+    }
 }
 
 std::vector<char> OpenBBMarshaller::getBinary() {
