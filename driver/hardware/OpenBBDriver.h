@@ -13,11 +13,19 @@ class OpenBBDriver: public QObject {
     Q_OBJECT
 public:
     OpenBBDriver();
-    void stream();
+public slots:
+    void startUp();
+    void reload();
+    void receiveBinary();
+    void closeDown();
 signals:
-    void binaryDataReady(std::vector<char> data);
+    void start();
+    void readyForMore();
+    void binaryReceived();
+    void stop();
 private:
     OpenBBRequester* requester;
+    OpenBBMarshaller* marshaller;
 };
 
 

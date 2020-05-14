@@ -4,7 +4,7 @@
 
 #include "OpenBBRequester.h"
 
-OpenBBRequester::OpenBBRequester(int fd): fd{fd} {
+OpenBBRequester::OpenBBRequester(): fd{open("/dev/video0", O_RDWR)} {
     OpenBBRequester::connect(this, &OpenBBRequester::buffersConfigured, this, &OpenBBRequester::requestBuffers);
     OpenBBRequester::connect(this, &OpenBBRequester::buffersRequested, this, &OpenBBRequester::queryBuffers)
 }

@@ -17,7 +17,7 @@
 class OpenBBMarshaller: public QObject {
     Q_OBJECT
 public:
-    OpenBBMarshaller() = default;
+    OpenBBMarshaller();
 public slots:
     void seed(BufferMeta* meta);
     void queueBuffers();
@@ -26,6 +26,7 @@ public slots:
     void unstream();
     void createBinary();
 signals:
+    void seeded();
     void buffersQueued();
     void streaming();
     void stoppedStreaming();
