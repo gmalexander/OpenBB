@@ -4,6 +4,11 @@
 
 #include "OpenBBRequester.h"
 
+OpenBBRequester::OpenBBRequester(int fd): fd{fd} {
+    OpenBBRequester::connect(this, &OpenBBRequester::buffersConfigured, this, &OpenBBRequester::requestBuffers);
+    OpenBBRequester::connect(this, &OpenBBRequester::buffersRequested, this, &OpenBBRequester::queryBuffers)
+}
+
 void OpenBBRequester::configureBuffers() {
     v4l2_format format;
     format.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
@@ -13,6 +18,7 @@ void OpenBBRequester::configureBuffers() {
     if (result != 0) {
         std::cout << "Setting format failed for reason: " << strerror(errno) << "\n";
     }
+    emit this->buffersConfigured();
 }
 
 void OpenBBRequester::requestBuffers() {
@@ -24,9 +30,10 @@ void OpenBBRequester::requestBuffers() {
     if (result != 0) {
         std::cout << "Requesting buffers failed for reason: " << strerror(errno) << "\n";
     }
+    emit this->buffersRequested();
 }
 
-OpenBBMarshaller* OpenBBRequester::queryBuffers() {
+void OpenBBRequester::queryBuffers() {
     v4l2_buffer buf;
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     buf.index = 0;
@@ -34,6 +41,5 @@ OpenBBMarshaller* OpenBBRequester::queryBuffers() {
     if (result != 0) {
         std::cout << "Querying buffers failed for reason: " << strerror(errno) << "\n";
     }
-    BufferMeta meta{mmap(NULL, buf.length, PROT_READ | PROT_WRITE, this->fd, MAP_SHARED, buf.m.offset), buf.length};
-    return new OpenBBMarshaller(meta, this->fd);
+    emit this->buffersQueried(new BufferMeta{mmap(NULL, buf.length, PROT_READ | PROT_WRITE, this->fd, MAP_SHARED, buf.m.offset), buf.length, this->fd});
 }

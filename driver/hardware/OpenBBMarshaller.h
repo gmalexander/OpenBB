@@ -10,20 +10,29 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <cerrno>
+#include <QObject>
 #include <cstring>
 #include <iostream>
 
-class OpenBBMarshaller {
+class OpenBBMarshaller: public QObject {
+    Q_OBJECT
 public:
-    explicit OpenBBMarshaller(BufferMeta meta, int fd): meta{meta}, fd{fd} {}
+    OpenBBMarshaller() = default;
+public slots:
+    void seed(BufferMeta* meta);
     void queueBuffers();
     void dequeueBuffers();
     void stream();
     void unstream();
-    std::vector<char> getBinary();
+    void createBinary();
+signals:
+    void buffersQueued();
+    void streaming();
+    void stoppedStreaming();
+    void buffersDequeued();
+    void binaryReady(std::vector<char> binaryData);
 private:
-    BufferMeta meta;
-    int fd;
+    BufferMeta* meta;
 };
 
 

@@ -18,7 +18,8 @@
 class OpenBBRequester: public QObject {
     Q_OBJECT
 public:
-    explicit OpenBBRequester(int fd): fd{fd} {}
+    explicit OpenBBRequester(int fd);
+public slots:
     void configureBuffers();
     void requestBuffers();
     void queryBuffers();
