@@ -8,8 +8,8 @@
 #include <QString>
 #include <QHostAddress>
 #include "OpenBBWebSocket.h"
-#include "../hardware/OpenBBMarshaller.h"
-#include "../hardware/OpenBBRequester.h"
+#include "hardware/OpenBBMarshaller.h"
+#include "hardware/OpenBBRequester.h"
 
 class OpenBBDriverServer: public QWebSocketServer {
   Q_OBJECT
