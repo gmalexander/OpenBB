@@ -1,8 +1,8 @@
 # OpenBB
 
-> 5 Before I formed thee in the belly I knew thee; and before thou camest forth out of the womb I sanctified thee, and I ordained thee a prophet unto the nations.
+> I will instruct thee and teach thee in the way which thou shalt go: I will guide thee with mine eye.
 
-Jeremiah 1:5
+Psalm 32:8
 
 This project is designed to provide an open source baby monitor solution. The key aims of this project are privacy, security, and of course, usability.
 
