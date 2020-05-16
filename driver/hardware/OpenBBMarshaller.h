@@ -5,7 +5,6 @@
 #ifndef OPENBB_OPENBBMARSHALLER_H
 #define OPENBB_OPENBBMARSHALLER_H
 #include "BufferMeta.h"
-#include <vector>
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -13,6 +12,7 @@
 #include <QObject>
 #include <cstring>
 #include <iostream>
+#include <QByteArray>
 
 class OpenBBMarshaller: public QObject {
     Q_OBJECT
@@ -31,7 +31,7 @@ signals:
     void streaming();
     void stoppedStreaming();
     void buffersDequeued();
-    void binaryReady(std::vector<char> binaryData);
+    void binaryReady(QByteArray binaryData);
 private:
     BufferMeta* meta;
 };

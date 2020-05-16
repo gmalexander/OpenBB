@@ -7,8 +7,9 @@
 #include <QWebSocketServer>
 #include <QString>
 #include <QHostAddress>
-#include <vector>
 #include "OpenBBWebSocket.h"
+#include "../hardware/OpenBBMarshaller.h"
+#include "../hardware/OpenBBRequester.h"
 
 class OpenBBDriverServer: public QWebSocketServer {
   Q_OBJECT
@@ -16,10 +17,11 @@ public:
     OpenBBDriverServer(int port, QString address);
 public slots:
     void handleConnection();
-    void transmitData(std::vector<char> bytes);
     void cleanUp();
 private:
     OpenBBWebSocket* activeSocket;
+    OpenBBRequester* requester;
+    OpenBBMarshaller* marshaller;
 };
 
 

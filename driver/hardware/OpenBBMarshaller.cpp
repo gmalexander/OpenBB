@@ -58,5 +58,5 @@ void OpenBBMarshaller::dequeueBuffers() {
 
 void OpenBBMarshaller::createBinary() {
     char* start = static_cast<char*>(this->meta->start);
-    emit binaryReady(std::vector<char>(start, start+this->meta->length));
+    emit binaryReady(QByteArray(start, this->meta->length));
 }
