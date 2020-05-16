@@ -17,13 +17,19 @@ void OpenBBWebSocket::cleanUp() {
 }
 
 void OpenBBWebSocket::receiveText(QString &message) {
-    QString response{"OK"};
     if(message == "START") {
+        QString response{"STARTING"};
         emit this->startStream();
         emit this->sendText(response);
     }
     if (message == "MORE") {
+        QString response{"STREAMING"};
         emit this->streamAgain();
+        emit this->sendText(response);
+    }
+    if (message == "STOP") {
+        QString response{"STOPPING"};
+        emit this->closing();
         emit this->sendText(response);
     }
 }

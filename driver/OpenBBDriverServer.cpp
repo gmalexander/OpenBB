@@ -24,6 +24,10 @@ void OpenBBDriverServer::handleConnection() {
 
 void OpenBBDriverServer::cleanUp() {
     OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
+    OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
+    OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::startStream, this->requester, &OpenBBRequester::configureBuffers);
+    OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::streamAgain, this->marshaller, &OpenBBMarshaller::stream);
+    OpenBBDriverServer::disconnect(this->marshaller, &OpenBBMarshaller::binaryReady, this->activeSocket, &OpenBBWebSocket::dispatchBinary);
     delete this->activeSocket;
     this->activeSocket = nullptr;
     this->resumeAccepting();
