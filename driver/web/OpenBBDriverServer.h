@@ -16,6 +16,7 @@ public:
     OpenBBDriverServer(int port, QString address);
 public slots:
     void handleConnection();
+    void transmitData(std::vector<char> bytes);
     void cleanUp();
 private:
     OpenBBWebSocket* activeSocket;
