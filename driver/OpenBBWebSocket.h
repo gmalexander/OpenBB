@@ -7,11 +7,12 @@
 #include <QObject>
 #include <QWebSocket>
 #include <QByteArray>
+#include <QMessageLogger>
 
 class OpenBBWebSocket: public QObject {
     Q_OBJECT
 public:
-    OpenBBWebSocket(QWebSocket* webSocket);
+    OpenBBWebSocket(QWebSocket* webSocket, QMessageLogger* log);
 public slots:
     void cleanUp();
     void receiveText(QString &message);
@@ -24,6 +25,7 @@ signals:
     void sendBinary(QByteArray bytes);
 private:
     QWebSocket* webSocket;
+    QMessageLogger* log;
 };
 
 

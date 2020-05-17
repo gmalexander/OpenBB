@@ -10,14 +10,13 @@
 #include <sys/ioctl.h>
 #include <cerrno>
 #include <QObject>
-#include <cstring>
-#include <iostream>
 #include <QByteArray>
+#include <QMessageLogger>
 
 class OpenBBMarshaller: public QObject {
     Q_OBJECT
 public:
-    OpenBBMarshaller();
+    OpenBBMarshaller(QMessageLogger* log);
 public slots:
     void seed(BufferMeta* meta);
     void queueBuffers();
@@ -32,8 +31,10 @@ signals:
     void stoppedStreaming();
     void buffersDequeued();
     void binaryReady(QByteArray binaryData);
+    void fatalMarshallerError();
 private:
     BufferMeta* meta;
+    QMessageLogger* log;
 };
 
 

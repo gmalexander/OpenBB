@@ -7,6 +7,7 @@
 #include <QWebSocketServer>
 #include <QString>
 #include <QHostAddress>
+#include <QMessageLogger>
 #include "OpenBBWebSocket.h"
 #include "hardware/OpenBBMarshaller.h"
 #include "hardware/OpenBBRequester.h"
@@ -19,6 +20,7 @@ public slots:
     void handleConnection();
     void cleanUp();
 private:
+    QMessageLogger* log;
     OpenBBWebSocket* activeSocket;
     OpenBBRequester* requester;
     OpenBBMarshaller* marshaller;

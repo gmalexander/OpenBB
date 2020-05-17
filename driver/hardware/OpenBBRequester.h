@@ -4,13 +4,11 @@
 
 #ifndef OPENBB_OPENBBREQUESTER_H
 #define OPENBB_OPENBBREQUESTER_H
-#include <vector>
-#include <iostream>
 #include <linux/videodev2.h>
 #include <QObject>
 #include <sys/ioctl.h>
-#include <cstring>
 #include <sys/mman.h>
+#include <QMessageLogger>
 #include <fcntl.h>
 #include "BufferMeta.h"
 #include "OpenBBMarshaller.h"
@@ -18,7 +16,7 @@
 class OpenBBRequester: public QObject {
     Q_OBJECT
 public:
-    explicit OpenBBRequester();
+    explicit OpenBBRequester(QMessageLogger* log);
 public slots:
     void configureBuffers();
     void requestBuffers();
@@ -27,8 +25,10 @@ signals:
     void buffersConfigured();
     void buffersRequested();
     void buffersQueried(BufferMeta* meta);
+    void fatalRequesterError();
 private:
     int fd;
+    QMessageLogger *log;
 };
 
 
