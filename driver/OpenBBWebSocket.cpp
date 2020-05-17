@@ -16,13 +16,13 @@ OpenBBWebSocket::OpenBBWebSocket(QWebSocket* webSocket, QMessageLogger* log) {
 }
 
 void OpenBBWebSocket::cleanUp() {
-    this->log->info("Websocket closing, emitting");
+    this->log->info("websocket closing, emitting");
     emit this->closing();
 }
 
 void OpenBBWebSocket::receiveText(QString &message) {
     if(message == "START") {
-        this->log->info("Message START received");
+        this->log->info("message START received");
         QString response{"STARTING"};
         this->log->info("starting stream");
         emit this->startStream();
@@ -30,17 +30,17 @@ void OpenBBWebSocket::receiveText(QString &message) {
         emit this->sendText(response);
     }
     if (message == "MORE") {
-        this->log->info("Message STREAMING received");
+        this->log->info("message STREAMING received");
         QString response{"STREAMING"};
-        this->log->info("Resuming streaming");
+        this->log->info("resuming streaming");
         emit this->streamAgain();
         this->log->info("sending back response STREAMING");
         emit this->sendText(response);
     }
     if (message == "STOP") {
-        this->log->info("Message STOP received");
+        this->log->info("message STOP received");
         QString response{"STOPPING"};
-        this->log->info("Closing stream");
+        this->log->info("closing stream");
         emit this->closing();
         this->log->info("sending back response STOPPING");
         emit this->sendText(response);
