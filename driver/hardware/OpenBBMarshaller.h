@@ -5,6 +5,7 @@
 #ifndef OPENBB_OPENBBMARSHALLER_H
 #define OPENBB_OPENBBMARSHALLER_H
 #include "BufferMeta.h"
+#include "DriverStatus.h"
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -30,6 +31,7 @@ signals:
     void streaming();
     void stoppedStreaming();
     void buffersDequeued();
+    void setDriverStatus(DriverStatus status);
     void binaryReady(QByteArray binaryData);
     void fatalMarshallerError();
 private:

@@ -19,6 +19,8 @@ public:
 public slots:
     void handleConnection();
     void cleanUp();
+signals:
+    void closeDriver();
 private:
     QMessageLogger* log;
     OpenBBWebSocket* activeSocket;

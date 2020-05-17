@@ -44,4 +44,5 @@ void OpenBBDriverServer::cleanUp() {
     this->activeSocket = nullptr;
     this->log->info("resuming incoming connection acceptance");
     this->resumeAccepting();
+    emit this->closeDriver();
 }

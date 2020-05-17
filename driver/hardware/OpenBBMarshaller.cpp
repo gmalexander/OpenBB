@@ -18,6 +18,7 @@ void OpenBBMarshaller::seed(BufferMeta* bufferMeta) {
     this->meta = bufferMeta;
     this->log->info("reporting seed status");
     emit this->seeded();
+    emit this->setDriverStatus(SEEDED);
 }
 
 void OpenBBMarshaller::queueBuffers() {
@@ -34,6 +35,7 @@ void OpenBBMarshaller::queueBuffers() {
         return;
     }
     this->log->info("reporting buffers queued");
+    emit this->setDriverStatus(QUEUING);
     emit this->buffersQueued();
 }
 
@@ -47,6 +49,7 @@ void OpenBBMarshaller::stream() {
         return;
     }
     this->log->info("reporting streaming on");
+    emit this->setDriverStatus(STREAMING);
     emit this->streaming();
 }
 
@@ -60,6 +63,7 @@ void OpenBBMarshaller::unstream() {
         return;
     }
     this->log->info("reporting that streaming has stopped");
+    emit this->setDriverStatus(UNSTREAMING);
     emit this->stoppedStreaming();
 }
 
@@ -77,6 +81,7 @@ void OpenBBMarshaller::dequeueBuffers() {
         return;
     }
     this->log->info("reporting buffered dequeued");
+    emit this->setDriverStatus(DEQUEUING);
     emit this->buffersDequeued();
 }
 
