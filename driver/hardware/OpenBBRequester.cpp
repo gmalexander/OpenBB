@@ -7,8 +7,8 @@
 OpenBBRequester::OpenBBRequester(QMessageLogger* log): fd{open("/dev/video0", O_RDWR)} {
     this->log = log;
     this->log->info("connecting request lifecycle");
-    OpenBBRequester::connect(this, &OpenBBRequester::buffersConfigured, this, &OpenBBRequester::requestBuffers);
-    OpenBBRequester::connect(this, &OpenBBRequester::buffersRequested, this, &OpenBBRequester::queryBuffers)
+    OpenBBRequester::connect(this, &OpenBBRequester::buffersConfigured, this, &OpenBBRequester::requestBuffers, Qt::QueuedConnection);
+    OpenBBRequester::connect(this, &OpenBBRequester::buffersRequested, this, &OpenBBRequester::queryBuffers, Qt::QueuedConnection)
 }
 
 void OpenBBRequester::configureBuffers() {
@@ -25,6 +25,7 @@ void OpenBBRequester::configureBuffers() {
         return;
     }
     this->log->info("reporting buffers to have been configured");
+    emit this->setDriverStatus(CONFIGURING);
     emit this->buffersConfigured();
 }
 
@@ -42,6 +43,7 @@ void OpenBBRequester::requestBuffers() {
         return;
     }
     this->log->info("reporting buffers to have been requested");
+    emit this->setDriverStatus(REQUESTING);
     emit this->buffersRequested();
 }
 
@@ -58,5 +60,6 @@ void OpenBBRequester::queryBuffers() {
         return;
     }
     this->log->info("reporting buffers to have been queried, and sending back buffer of length %d and offset %d", buf.length, buf.m.offset);
+    emit this->setDriverStatus(QUERYING);
     emit this->buffersQueried(new BufferMeta{mmap(NULL, buf.length, PROT_READ | PROT_WRITE, this->fd, MAP_SHARED, buf.m.offset), buf.length, this->fd});
 }

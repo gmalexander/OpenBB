@@ -7,18 +7,18 @@
 OpenBBMarshaller::OpenBBMarshaller(QMessageLogger* log) {
     this->log = log;
     this->log->info("connecting marshaller lifecycle");
-    OpenBBMarshaller::connect(this, &OpenBBMarshaller::seeded, this, &OpenBBMarshaller::queueBuffers);
-    OpenBBMarshaller::connect(this, &OpenBBMarshaller::buffersQueued, this, &OpenBBMarshaller::stream);
-    OpenBBMarshaller::connect(this, &OpenBBMarshaller::streaming, this, &OpenBBMarshaller::unstream);
-    OpenBBMarshaller::connect(this, &OpenBBMarshaller::stoppedStreaming, this, &OpenBBMarshaller::createBinary);
+    OpenBBMarshaller::connect(this, &OpenBBMarshaller::seeded, this, &OpenBBMarshaller::queueBuffers, Qt::QueuedConnection);
+    OpenBBMarshaller::connect(this, &OpenBBMarshaller::buffersQueued, this, &OpenBBMarshaller::stream, Qt::QueuedConnection);
+    OpenBBMarshaller::connect(this, &OpenBBMarshaller::streaming, this, &OpenBBMarshaller::unstream, Qt::QueuedConnection);
+    OpenBBMarshaller::connect(this, &OpenBBMarshaller::stoppedStreaming, this, &OpenBBMarshaller::createBinary, Qt::QueuedConnection);
 }
 
 void OpenBBMarshaller::seed(BufferMeta* bufferMeta) {
     this->log->info("received seed");
     this->meta = bufferMeta;
     this->log->info("reporting seed status");
-    emit this->seeded();
     emit this->setDriverStatus(SEEDED);
+    emit this->seeded();
 }
 
 void OpenBBMarshaller::queueBuffers() {

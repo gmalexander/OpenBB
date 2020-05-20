@@ -14,10 +14,12 @@ OpenBBDriverServer::OpenBBDriverServer(int port, QString address): QWebSocketSer
     this->requester = new OpenBBRequester(this->log);
     this->marshaller = new OpenBBMarshaller(this->log);
     this->log->info("connecting seed and new connection handling");
-    OpenBBDriverServer::connect(this->requester, &OpenBBRequester::buffersQueried, this->marshaller, &OpenBBMarshaller::seed);
-    OpenBBDriverServer::connect(this->requester, &OpenBBRequester::fatalRequesterError, this, &OpenBBDriverServer::cleanUp);
-    OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::fatalMarshallerError, this, &OpenBBDriverServer::cleanUp);
-    OpenBBDriverServer::connect(this, &QWebSocketServer::newConnection, this, &OpenBBDriverServer::handleConnection);
+    OpenBBDriverServer::connect(this->requester, &OpenBBRequester::buffersQueried, this->marshaller, &OpenBBMarshaller::seed, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->requester, &OpenBBRequester::fatalRequesterError, this, &OpenBBDriverServer::cleanUp, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::fatalMarshallerError, this, &OpenBBDriverServer::cleanUp, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this, &QWebSocketServer::newConnection, this, &OpenBBDriverServer::handleConnection, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->requester, &OpenBBRequester::setDriverStatus, this, &OpenBBDriverServer::setDriverStatus, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::setDriverStatus, this, &OpenBBDriverServer::setDriverStatus, Qt::QueuedConnection);
 }
 
 void OpenBBDriverServer::handleConnection() {
@@ -26,10 +28,10 @@ void OpenBBDriverServer::handleConnection() {
     this->log->info("assigning new active socket");
     this->activeSocket = new OpenBBWebSocket(this->nextPendingConnection(), this->log);
     this->log->info("connecting connection lifetime handlers");
-    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
-    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::startStream, this->requester, &OpenBBRequester::configureBuffers);
-    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::streamAgain, this->marshaller, &OpenBBMarshaller::stream);
-    OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::binaryReady, this->activeSocket, &OpenBBWebSocket::dispatchBinary);
+    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::startStream, this->requester, &OpenBBRequester::configureBuffers, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->activeSocket, &OpenBBWebSocket::streamAgain, this->marshaller, &OpenBBMarshaller::stream, Qt::QueuedConnection);
+    OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::binaryReady, this->activeSocket, &OpenBBWebSocket::dispatchBinary, Qt::QueuedConnection);
 }
 
 void OpenBBDriverServer::cleanUp() {
@@ -45,4 +47,8 @@ void OpenBBDriverServer::cleanUp() {
     this->log->info("resuming incoming connection acceptance");
     this->resumeAccepting();
     emit this->closeDriver();
+}
+
+void OpenBBDriverServer::setDriverStatus(DriverStatus status) {
+    this->status = status;
 }

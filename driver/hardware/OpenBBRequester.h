@@ -11,8 +11,7 @@
 #include <QMessageLogger>
 #include <fcntl.h>
 #include "BufferMeta.h"
-#include "OpenBBMarshaller.h"
-
+#include "DriverStatus.h"
 class OpenBBRequester: public QObject {
     Q_OBJECT
 public:
@@ -22,6 +21,7 @@ public slots:
     void requestBuffers();
     void queryBuffers();
 signals:
+    void setDriverStatus(DriverStatus status);
     void buffersConfigured();
     void buffersRequested();
     void buffersQueried(BufferMeta* meta);

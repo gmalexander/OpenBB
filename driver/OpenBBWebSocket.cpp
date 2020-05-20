@@ -20,6 +20,11 @@ void OpenBBWebSocket::cleanUp() {
     emit this->closing();
 }
 
+void OpenBBWebSocket::closeForError() {
+    //todo: why
+    this->webSocket->close()
+}
+
 void OpenBBWebSocket::receiveText(QString &message) {
     if(message == "START") {
         this->log->info("message START received");

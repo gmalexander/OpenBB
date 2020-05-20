@@ -19,6 +19,7 @@ public:
 public slots:
     void handleConnection();
     void cleanUp();
+    void setDriverStatus(DriverStatus status);
 signals:
     void closeDriver();
 private:
@@ -26,6 +27,7 @@ private:
     OpenBBWebSocket* activeSocket;
     OpenBBRequester* requester;
     OpenBBMarshaller* marshaller;
+    DriverStatus status;
 };
 
 

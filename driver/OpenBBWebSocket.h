@@ -17,6 +17,7 @@ public slots:
     void cleanUp();
     void receiveText(QString &message);
     void dispatchBinary(QByteArray bytes);
+    void closeForError();
 signals:
     void closing();
     void startStream();
