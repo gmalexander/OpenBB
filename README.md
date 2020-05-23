@@ -17,3 +17,11 @@ The ultimate goal here is for a low-resource computer (say a raspberry PI) to be
 phone, or PC within the local intranet.
 
 This software is licensed under the MIT license (see LICENSE.txt) and provided in the hopes that it will be useful.
+
+## Build Dependencies
+
+Ubuntu:
+
+> sudo apt-get install libqt5core5a libqt5websockets-dev cmake clang gdb 
+
+NOTE: the Qt5_DIR cmake variable assumes that if you're in WSL, that it's running Ubuntu.

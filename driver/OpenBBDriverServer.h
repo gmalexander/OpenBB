@@ -20,8 +20,10 @@ public slots:
     void handleConnection();
     void cleanUp();
     void setDriverStatus(DriverStatus status);
+    void handleDriverError();
 signals:
-    void closeDriver();
+    void dequeueDriver();
+    void unstreamDriver();
 private:
     QMessageLogger* log;
     OpenBBWebSocket* activeSocket;

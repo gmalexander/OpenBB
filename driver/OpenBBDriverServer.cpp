@@ -34,6 +34,19 @@ void OpenBBDriverServer::handleConnection() {
     OpenBBDriverServer::connect(this->marshaller, &OpenBBMarshaller::binaryReady, this->activeSocket, &OpenBBWebSocket::dispatchBinary, Qt::QueuedConnection);
 }
 
+void OpenBBDriverServer::handleDriverError() {
+    this->log->critical("error reported from driver, closing");
+    switch(this->status) {
+        case QUEUING:
+            emit this->dequeueDriver();
+            break;
+        case STREAMING:
+            // we only check for an error at starting the stream, or ending the stream. In either case, there's no active stream
+            emit this->dequeueDriver();
+            break;
+    }
+}
+
 void OpenBBDriverServer::cleanUp() {
     this->log->info("disconnecting connection lifetime handlers");
     OpenBBDriverServer::disconnect(this->activeSocket, &OpenBBWebSocket::closing, this, &OpenBBDriverServer::cleanUp);
@@ -46,7 +59,6 @@ void OpenBBDriverServer::cleanUp() {
     this->activeSocket = nullptr;
     this->log->info("resuming incoming connection acceptance");
     this->resumeAccepting();
-    emit this->closeDriver();
 }
 
 void OpenBBDriverServer::setDriverStatus(DriverStatus status) {
