@@ -12,6 +12,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 14)
 
 find_package(Qt5 COMPONENTS WebSockets Core REQUIRED)
-add_executable(OpenBB driver/hardware/OpenBBMarshaller.cpp driver/hardware/OpenBBMarshaller.h driver/hardware/OpenBBRequester.cpp driver/hardware/OpenBBRequester.h driver/hardware/BufferMeta.h driver/OpenBBDriverServer.cpp driver/OpenBBDriverServer.h driver/OpenBBWebSocket.cpp driver/OpenBBWebSocket.h driver/hardware/DriverStatus.h)
+add_executable(OpenBB driver/hardware/Marshaller.cpp driver/hardware/Marshaller.h driver/hardware/Requester.cpp driver/hardware/Requester.h driver/hardware/BufferMeta.h driver/DriverServer.cpp driver/DriverServer.h driver/WebSocket.cpp driver/WebSocket.h driver/hardware/DriverStatus.h)
 
 target_link_libraries(OpenBB Qt5::WebSockets Qt5::Core)
