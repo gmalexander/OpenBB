@@ -25,7 +25,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("setting format failed for reason: %s", strerror(errno));
-            emit this->fatalRequesterError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting buffers to have been configured");
@@ -44,7 +44,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("requesting buffers failed for reason: %s", strerror(errno));
-            emit this->fatalRequesterError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting buffers to have been requested");
@@ -62,7 +62,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("iotctl returned invalid value: %d", result);
             this->log->critical("querying buffers failed for reason: %s", strerror(errno));
-            emit this->fatalRequesterError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting buffers to have been queried, and sending back buffer of length %d and offset %d",

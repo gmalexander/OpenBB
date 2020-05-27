@@ -6,6 +6,7 @@
 #define OPENBB_MARSHALLER_H
 #include "BufferMeta.h"
 #include "DriverStatus.h"
+#include "ErrorOrigin.h"
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -50,7 +51,7 @@ namespace OpenBB {
 
         void binaryReady(QByteArray binaryData);
 
-        void fatalMarshallerError();
+        void sendError(ErrorOrigin origin = DRIVER);
 
     private:
         BufferMeta *meta;

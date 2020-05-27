@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include "BufferMeta.h"
 #include "DriverStatus.h"
+#include "ErrorOrigin.h"
 
 namespace OpenBB {
     class Requester : public QObject {
@@ -37,7 +38,7 @@ namespace OpenBB {
 
         void buffersQueried(BufferMeta *meta);
 
-        void fatalRequesterError();
+        void sendError(ErrorOrigin origin = DRIVER);
 
     private:
         int fd;

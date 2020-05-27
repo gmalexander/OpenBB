@@ -8,6 +8,7 @@
 #include <QWebSocket>
 #include <QByteArray>
 #include <QMessageLogger>
+#include "hardware/ErrorOrigin.h"
 
 namespace OpenBB {
     class WebSocket : public QObject {
@@ -17,25 +18,27 @@ namespace OpenBB {
 
     public slots:
 
-        void cleanUp();
-
         void receiveText(QString &message);
 
         void dispatchBinary(QByteArray bytes);
 
-        void closeForError();
+        void close();
 
     signals:
 
-        void closing();
+        void disconnected();
 
         void startStream();
 
         void sendText(QString &message);
 
+        void closing();
+
         void streamAgain();
 
         void sendBinary(QByteArray bytes);
+
+        void sendError(ErrorOrigin origin = SOCKET);
 
     private:
         QWebSocket *webSocket;

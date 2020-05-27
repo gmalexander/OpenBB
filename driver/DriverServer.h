@@ -26,24 +26,30 @@ namespace OpenBB {
 
         void setDriverStatus(DriverStatus status);
 
-        void handleError();
+        void handleError(ErrorOrigin error);
+
+        void reset();
+
+        void reopen();
 
     signals:
 
-        void dequeueDriver();
+        void dequeuing();
 
-        void closeConnection();
+        void closing();
 
-        void resetDriver();
+        void resetting();
 
-        void unstreamDriver();
+        void reopening();
+
+        void unstreaming();
 
     private:
         void connectDriverErrorHandling();
 
         void connectDriverStateful();
 
-        void connectDriverTransitional();
+        void connectTransitional();
 
         void connectSocketLifecycle();
 

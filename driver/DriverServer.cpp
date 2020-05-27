@@ -18,7 +18,7 @@ namespace OpenBB {
         this->log->info("connecting seed and new connection handling");
         this->connectDriverErrorHandling();
         this->connectDriverStateful();
-        this->connectDriverTransitional();
+        this->connectTransitional();
     }
 
     void DriverServer::handleConnection() {
@@ -30,33 +30,35 @@ namespace OpenBB {
         this->connectSocketLifecycle();
     }
 
-    void DriverServer::handleError() {
+    void DriverServer::handleError(ErrorOrigin origin) {
+        this->log->critical("Error reported from %s", toReadableOrigin(origin).toStdString().c_str());
+        emit this->closing();
+        emit this->resetting();
+    }
+
+    void DriverServer::reset() {
+        auto statusMessage = toReadableStatus(this->status).toStdString().c_str();
         switch (this->status) {
-            case QUEUED:
-                this->log->critical("Dequeuing driver following error at QUEUED phase");
-                emit this->dequeueDriver();
-                break;
-            case STREAM:
-                this->log->critical("Dequeuing driver following error at STREAM phase");
-                emit this->dequeueDriver();
-                break;
             case STREAMING:
-                this->log->critical("Turning off stream and dequeuing following error at STREAMING phase");
-                emit this->unstreamDriver();
-                emit this->dequeueDriver();
-                break;
+                this->log->info("Turning off stream at %s phase", statusMessage);
+                emit this->unstreaming();
+            case QUEUED:
             case UNSTREAM:
-                this->log->critical("Dequeuing following error at UNSTREAM phase");
-                emit this->dequeueDriver();
-                break;
+            case STREAM:
             case UNSTREAMED:
-                this->log->critical("Dequeuing follow error at UNSTREAMED phase");
-                emit this->dequeueDriver();
+                this->log->info("Dequeuing driver at %s phase", statusMessage);
+                emit this->dequeuing();
                 break;
             default:
-                this->log->critical("No driver action taken for error at %s phase", toReadableStatus(status).toStdString().c_str());
+                this->log->info("No driver action taken for error at %s phase", statusMessage);
                 break;
         }
+        emit this->reopening();
+    }
+
+    void DriverServer::reopen() {
+        this->log->info("resuming incoming connection acceptance");
+        this->resumeAccepting();
     }
 
     void DriverServer::cleanUp() {
@@ -65,8 +67,7 @@ namespace OpenBB {
         this->log->info("deleting active socket");
         delete this->activeSocket;
         this->activeSocket = nullptr;
-        this->log->info("resuming incoming connection acceptance");
-        emit this->resetDriver();
+        emit this->resetting();
     }
 
     void DriverServer::setDriverStatus(DriverStatus status) {
@@ -76,11 +77,11 @@ namespace OpenBB {
    //private members
 
     void DriverServer::connectDriverErrorHandling() {
-        DriverServer::connect(this->requester, &Requester::fatalRequesterError, this,
+        DriverServer::connect(this->requester, &Requester::sendError, this,
                               &DriverServer::handleError, Qt::QueuedConnection);
-        DriverServer::connect(this->marshaller, &Marshaller::fatalMarshallerError, this,
+        DriverServer::connect(this->marshaller, &Marshaller::sendError, this,
                               &DriverServer::handleError, Qt::QueuedConnection);
-        DriverServer::connect(this, &DriverServer::dequeueDriver, this->marshaller,
+        DriverServer::connect(this, &DriverServer::dequeuing, this->marshaller,
                               &Marshaller::dequeueBuffers, Qt::QueuedConnection);
     }
 
@@ -90,28 +91,36 @@ namespace OpenBB {
                               &DriverServer::setDriverStatus);
         DriverServer::connect(this->marshaller, &Marshaller::setDriverStatus, this,
                               &DriverServer::setDriverStatus);
+        DriverServer::connect(this, &DriverServer::resetting, this,
+                              &DriverServer::reset, Qt::QueuedConnection);
     }
 
-    void DriverServer::connectDriverTransitional() {
+    void DriverServer::connectTransitional() {
         DriverServer::connect(this->requester, &Requester::buffersQueried, this->marshaller,
                               &Marshaller::seed, Qt::QueuedConnection);
-        DriverServer::connect(this, &QWebSocketServer::newConnection, this, &DriverServer::handleConnection,
-                              Qt::QueuedConnection);
+        DriverServer::connect(this, &QWebSocketServer::newConnection, this,
+                              &DriverServer::handleConnection,Qt::QueuedConnection);
+        DriverServer::connect(this, &DriverServer::reopening, this,
+                              &DriverServer::reopen, Qt::QueuedConnection);
     }
 
     void DriverServer::connectSocketLifecycle() {
-        DriverServer::connect(this->activeSocket, &WebSocket::closing, this, &DriverServer::cleanUp,
-                              Qt::QueuedConnection);
+        DriverServer::connect(this->activeSocket, &WebSocket::disconnected, this,
+                              &DriverServer::cleanUp,Qt::QueuedConnection);
         DriverServer::connect(this->activeSocket, &WebSocket::startStream, this->requester,
                               &Requester::configureBuffers, Qt::QueuedConnection);
         DriverServer::connect(this->activeSocket, &WebSocket::streamAgain, this->marshaller,
                               &Marshaller::stream, Qt::QueuedConnection);
         DriverServer::connect(this->marshaller, &Marshaller::binaryReady, this->activeSocket,
                               &WebSocket::dispatchBinary, Qt::QueuedConnection);
+        DriverServer::connect(this->activeSocket, &WebSocket::sendError, this,
+                              &DriverServer::handleError, Qt::QueuedConnection);
+        DriverServer::connect(this, &DriverServer::closing, this->activeSocket,
+                              &WebSocket::close, Qt::QueuedConnection);
     }
 
     void DriverServer::disconnectSocketLifecycle() {
-        DriverServer::disconnect(this->activeSocket, &WebSocket::closing, this,
+        DriverServer::disconnect(this->activeSocket, &WebSocket::disconnected, this,
                                  &DriverServer::cleanUp);
         DriverServer::disconnect(this->activeSocket, &WebSocket::startStream, this->requester,
                                  &Requester::configureBuffers);
@@ -119,5 +128,9 @@ namespace OpenBB {
                                  &Marshaller::stream);
         DriverServer::disconnect(this->marshaller, &Marshaller::binaryReady, this->activeSocket,
                                  &WebSocket::dispatchBinary);
+        DriverServer::disconnect(this->activeSocket, &WebSocket::sendError, this,
+                                 &DriverServer::handleError);
+        DriverServer::disconnect(this, &DriverServer::closing, this->activeSocket,
+                                 &WebSocket::close);
     }
 }

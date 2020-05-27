@@ -38,7 +38,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("queuing buffer failed for reason: %s", strerror(errno));
-            emit this->fatalMarshallerError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting buffers queued");
@@ -53,7 +53,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("streaming failed for reason: %s", strerror(errno));
-            emit this->fatalMarshallerError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting streaming on");
@@ -68,7 +68,7 @@ namespace OpenBB {
         if (result != 0) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("turning streaming off failed for reason: %s", strerror(errno));
-            emit this->fatalMarshallerError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting that streaming has stopped");
@@ -87,7 +87,7 @@ namespace OpenBB {
         if (result == -1) {
             this->log->critical("ioctl returned invalid value: %d", result);
             this->log->critical("dequeuing buffer failed for reason: %s", strerror(errno));
-            emit this->fatalMarshallerError();
+            emit this->sendError();
             return;
         }
         this->log->info("reporting buffered dequeued");

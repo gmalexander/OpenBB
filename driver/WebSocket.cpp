@@ -9,22 +9,17 @@ namespace OpenBB {
         this->webSocket = webSocket;
         this->log = log;
         this->log->info("connecting clean up and message receivers");
-        WebSocket::connect(this->webSocket, &QWebSocket::aboutToClose, this, &WebSocket::cleanUp);
+        WebSocket::connect(this->webSocket, &QWebSocket::disconnected, this, &WebSocket::disconnected);
         WebSocket::connect(this->webSocket, &QWebSocket::textMessageReceived, this,
                            &WebSocket::receiveText);
         this->log->info("connecting output slots and signals");
         WebSocket::connect(this, &WebSocket::sendText, this->webSocket, &QWebSocket::sendTextMessage);
         WebSocket::connect(this, &WebSocket::sendBinary, this->webSocket, &QWebSocket::sendBinaryMessage);
+        WebSocket::connect(this, &WebSocket::closing, this, &WebSocket::close);
     }
 
-    void WebSocket::cleanUp() {
-        this->log->info("websocket closing, emitting");
-        emit this->closing();
-    }
-
-    void WebSocket::closeForError() {
-        //todo: why
-        this->webSocket->close()
+    void WebSocket::close() {
+        this->webSocket->close();
     }
 
     void WebSocket::receiveText(QString &message) {
