@@ -16,10 +16,16 @@ namespace OpenBB {
         WebSocket::connect(this, &WebSocket::sendText, this->webSocket, &QWebSocket::sendTextMessage);
         WebSocket::connect(this, &WebSocket::sendBinary, this->webSocket, &QWebSocket::sendBinaryMessage);
         WebSocket::connect(this, &WebSocket::closing, this, &WebSocket::close);
+        WebSocket::connect(this->webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(receiveError(QAbstractSocket::SocketError)));
     }
 
     void WebSocket::close() {
         this->webSocket->close();
+    }
+
+    void WebSocket::receiveError(QAbstractSocket::SocketError error) {
+        this->log->critical("Received socket error value: %d", error);
+        emit this->sendError();
     }
 
     void WebSocket::receiveText(QString &message) {

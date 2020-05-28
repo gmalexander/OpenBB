@@ -21,6 +21,8 @@ namespace OpenBB {
 
     public slots:
 
+        void receiveError(QAbstractSocket::SocketError error);
+
         void receiveText(QString &message);
 
         void dispatchBinary(QByteArray bytes);
