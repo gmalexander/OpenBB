@@ -14,8 +14,11 @@
 
 namespace OpenBB {
     class DriverServer : public QWebSocketServer {
+
     Q_OBJECT
+
     public:
+
         DriverServer(int port, QString address);
 
     public slots:
@@ -56,9 +59,13 @@ namespace OpenBB {
         void disconnectSocketLifecycle();
 
         QMessageLogger *log;
+
         WebSocket *activeSocket;
+
         Requester *requester;
+
         Marshaller *marshaller;
+
         DriverStatus status;
     };
 }

@@ -12,8 +12,11 @@
 
 namespace OpenBB {
     class WebSocket : public QObject {
+
     Q_OBJECT
+
     public:
+
         WebSocket(QWebSocket *webSocket, QMessageLogger *log);
 
     public slots:
@@ -41,8 +44,11 @@ namespace OpenBB {
         void sendError(ErrorOrigin origin = SOCKET);
 
     private:
+
         QWebSocket *webSocket;
+
         QMessageLogger *log;
+
     };
 }
 

@@ -7,11 +7,17 @@
 
 namespace OpenBB {
     class BufferMeta {
+
     public:
+
         explicit BufferMeta(void* start, unsigned length, int fd): start{start}, length{length}, fd{fd} {}
+
         void* start;
+
         unsigned length;
+
         int fd;
+
     };
 }
 

@@ -16,8 +16,11 @@
 
 namespace OpenBB {
     class Requester : public QObject {
+
     Q_OBJECT
+
     public:
+
         explicit Requester(QMessageLogger *log);
 
     public slots:
@@ -41,8 +44,11 @@ namespace OpenBB {
         void sendError(ErrorOrigin origin = DRIVER);
 
     private:
+
         int fd;
+
         QMessageLogger *log;
+
     };
 }
 

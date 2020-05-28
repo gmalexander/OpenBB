@@ -8,8 +8,11 @@
 
 namespace OpenBB {
     enum ErrorOrigin {
+
         DRIVER,
+
         SOCKET,
+        
     };
 
     QString toReadableOrigin(ErrorOrigin origin) {

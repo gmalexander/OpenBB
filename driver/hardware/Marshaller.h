@@ -17,8 +17,11 @@
 
 namespace OpenBB {
     class Marshaller : public QObject {
+
     Q_OBJECT
+
     public:
+
         Marshaller(QMessageLogger *log);
 
     public slots:
@@ -54,8 +57,11 @@ namespace OpenBB {
         void sendError(ErrorOrigin origin = DRIVER);
 
     private:
+
         BufferMeta *meta;
+
         QMessageLogger *log;
+
     };
 }
 
